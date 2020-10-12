@@ -16,9 +16,10 @@ First, you need to create OAuth2 credentials (https://console.developers.google.
 In detail: go to https://console.developers.google.com/apis, and then choose Credentials on the menu (located on the left side of the screen). After that, press the blue button “Create credentials” located below the page title, and choose “OAuth client ID”. Select “Other” as application type, fill in “Name” field, and press “Create” button. It will show your “Client ID” and “Client secret” in a pop-up window. After closing this pop-up, you can download JSON credentials file by pressing Download JSON button located on the right side (it looks like download button on dropbox, google drive, etc). You will need this file in step 4.
 
 #### Step 2: Install google api
-After installing Python (both 2.x and 3.x will work), you need to install following packages:
+After installing Python (both 2.x and 3.x will work), you need to install following packages (maybe using sudo):
 
     python -m pip install --upgrade google-api-python-client
+    python -m pip install --upgrade oauth2client
     python -m pip install configparser
     python -m pip install requests
 
