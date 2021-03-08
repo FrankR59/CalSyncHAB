@@ -102,22 +102,22 @@ def Main():
     for EventCounter in range(1, MaxEvents + 1):
 
         CalendarEventSummaryItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_Summary'
-        OpenHABResponse = requests.post(CalendarEventSummaryItemURL, data = '', allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventSummaryItemURL, data = '', allow_redirects = True, headers={'Content-type': 'text/plain'})
        
         CalendarEventLocationItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_Location'
-        OpenHABResponse = requests.post(CalendarEventLocationItemURL, data = '', allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventLocationItemURL, data = '', allow_redirects = True, headers={'Content-type': 'text/plain'})
 
         CalendarEventDescriptionItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_Description'
-        OpenHABResponse = requests.post(CalendarEventDescriptionItemURL, data = '', allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventDescriptionItemURL, data = '', allow_redirects = True, headers={'Content-type': 'text/plain'})
         
         CalendarEventStartTimeItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_StartTime'
-        OpenHABResponse = requests.post(CalendarEventStartTimeItemURL, data = '1970-01-01T00:00:00', allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventStartTimeItemURL, data = '1970-01-01T00:00:00', allow_redirects = True, headers={'Content-type': 'text/plain'})
 
         CalendarEventEndTimeItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_EndTime'
-        OpenHABResponse = requests.post(CalendarEventEndTimeItemURL, data = '1970-01-01T00:00:00', allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventEndTimeItemURL, data = '1970-01-01T00:00:00', allow_redirects = True, headers={'Content-type': 'text/plain'})
         
         CalendarEventCalIDItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_CalId'
-        OpenHABResponse = requests.post(CalendarEventCalIDItemURL, data = '', allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventCalIDItemURL, data = '', allow_redirects = True, headers={'Content-type': 'text/plain'})
 
     time.sleep(2)
 
@@ -152,22 +152,22 @@ def Main():
             EventCalId = SingleEvent[5]
 
         CalendarEventSummaryItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_Summary'
-        OpenHABResponse = requests.post(CalendarEventSummaryItemURL, data = EventSummary.encode('utf-8'), allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventSummaryItemURL, data = EventSummary.encode('utf-8'), allow_redirects = True, headers={'Content-type': 'text/plain'})
 
         CalendarEventLocationItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_Location'
-        OpenHABResponse = requests.post(CalendarEventLocationItemURL, data = EventLocation.encode('utf-8'), allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventLocationItemURL, data = EventLocation.encode('utf-8'), allow_redirects = True, headers={'Content-type': 'text/plain'})
 
         CalendarEventDescriptionItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_Description'
-        OpenHABResponse = requests.post(CalendarEventDescriptionItemURL, data = EventDescription.encode('utf-8'), allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventDescriptionItemURL, data = EventDescription.encode('utf-8'), allow_redirects = True, headers={'Content-type': 'text/plain'})
 
         CalendarEventStartTimeItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_StartTime'
-        OpenHABResponse = requests.post(CalendarEventStartTimeItemURL, data = EventStartTime, allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventStartTimeItemURL, data = EventStartTime, allow_redirects = True, headers={'Content-type': 'text/plain'})
     
         CalendarEventEndTimeItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_EndTime'
-        OpenHABResponse = requests.post(CalendarEventEndTimeItemURL, data = EventEndTime, allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventEndTimeItemURL, data = EventEndTime, allow_redirects = True, headers={'Content-type': 'text/plain'})
         
         CalendarEventCalIdItemURL = 'http://' + TrimmedHostAndPort + '/rest/items/' + S.OpenHABItemPrefix + 'Event' + str(EventCounter) + '_CalId'
-        OpenHABResponse = requests.post(CalendarEventCalIdItemURL, data = EventCalId.encode('utf-8'), allow_redirects = True)
+        OpenHABResponse = requests.post(CalendarEventCalIdItemURL, data = EventCalId.encode('utf-8'), allow_redirects = True, headers={'Content-type': 'text/plain'})
 
         if EventCounter == MaxEvents:
             break
