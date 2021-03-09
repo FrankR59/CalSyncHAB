@@ -1,11 +1,11 @@
-      /**********************************************************/
-     /*                 calendar.rules                         */
+       /**********************************************************/
+     /*                 calendr.rules                          */
     /*                 ===============                        */
    /* this files contains some openhAB2-rules for retrieving */
   /*  and managing events from your google calendars        */
  /**********************************************************/
 
-import org.joda.time.DateTime
+//import org.joda.time.DateTime
 
    /***********************************************/
   /* GetCalEvents retrieves your google calendar */
@@ -15,7 +15,7 @@ rule "GetCalEvents"
 when
 	Time cron "30 0/30 * * * ?"
 then
-	var String results = executeCommandLine("/etc/openhab2/scripts/CalSyncHAB.sh",5*1000)
+	val String results = executeCommandLine(Duration.ofSeconds(10), "/etc/openhab/scripts/CalSyncHAB.sh")
 	logInfo("GetCalEvents", results)
 end
 
@@ -30,7 +30,7 @@ rule "ActCal"
 when
 	Item calAct changed from OFF to ON
 then
-	var String results = executeCommandLine("/etc/openhab2/scripts/CalSyncHAB.sh",5*1000)
+	val String results = executeCommandLine(Duration.ofSeconds(10), "/etc/openhab/scripts/CalSyncHAB.sh")
 	logInfo("ActCal", results)
 	sendCommand(calAct,OFF)
 end
@@ -38,7 +38,7 @@ end
 
         /***************************************************/
        /* ExecCal switches through your calendar items    */
-      /* and checks if an event is to start or to end    */
+      /* and checks if an event is to start ort to end   */
      /*  Depending on the condition which is optionally */
     /* given within the event location the start or    */
    /* end action given in events description will     */
@@ -49,7 +49,6 @@ rule "ExecCal"
 when
 	Time cron "0 0/1 * * * ?"
 then
-	swiNoHpInit.sendCommand(ON)
 	logInfo("ExecCal", "Start")
 	gCal.members.forEach[ gc | 
 		val eventStart = gCalEvent.members.filter[ act |
@@ -62,10 +61,11 @@ then
 			act.name == gc.name+"_Summary"].head
 		val eventLoc = gCalEvent.members.filter[ act |
 			act.name == gc.name+"_Location"].head
-		var DateTime dtStart = new DateTime((eventStart.state as DateTimeType).zonedDateTime.toInstant.toEpochMilli)
-		var DateTime dtEnd = new DateTime((eventEnd.state as DateTimeType).zonedDateTime.toInstant.toEpochMilli)
-		var Long dStart = now.millis - dtStart.millis
-		var Long dEnd = now.millis - dtEnd.millis
+		val Number dtStart_millis = (eventStart.state as DateTimeType).zonedDateTime.toInstant.toEpochMilli
+		val Number dtEnd_millis = (eventEnd.state as DateTimeType).zonedDateTime.toInstant.toEpochMilli
+		val Number now_millis = now.toInstant.toEpochMilli
+		var Number dStart = now_millis - dtStart_millis  //now.millis - dtStart.millis
+		var Number dEnd = now_millis - dtEnd_millis      //now.millis - dtEnd.millis
 		val cond = eventLoc.state.toString.split(" ")
 		val cmd = eventDesc.state.toString.split(";")
 		val calItem = gCalItem.members.filter[ ci | ci.name == eventSum.state.toString].head
@@ -83,6 +83,26 @@ then
 						}
 						case "!=": {
 							if (testItem.state.toString !== cond.get(2)) {
+								testOk = true
+							}
+						}
+						case ">": {
+							if (testItem.state > Float::parseFloat(cond.get(2)) as Number) {
+								testOk = true
+							}
+						}
+						case ">=": {
+							if (testItem.state >= Float::parseFloat(cond.get(2)) as Number) {
+								testOk = true
+							}
+						}
+						case "<": {
+							if (testItem.state < Float::parseFloat(cond.get(2)) as Number) {
+								testOk = true
+							}
+						}
+						case "<=": {
+							if (testItem.state <= Float::parseFloat(cond.get(2)) as Number) {
 								testOk = true
 							}
 						}
@@ -136,5 +156,4 @@ then
 		}
 	]
 	logInfo("ExecCal", "End")
-	swiNoHpInit.sendCommand(OFF)
 end
