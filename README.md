@@ -59,7 +59,7 @@ Windows users do not need the chown and chmod commands
 - Put the python scripts, .ini file and the .json file into this new folder
 - Set owner of the new folder:
     ```
-    chown openhab:openhab /etc/openhab2/scripts/CalSyncHAB
+    chown openhab:openhab /etc/openhab/scripts/CalSyncHAB
     ```
 - Set owner of all your files within the new folder
     ```
@@ -68,17 +68,17 @@ Windows users do not need the chown and chmod commands
     ```
 - open CalSynHAB.ini and set property “ClientSecretFile” to the full path where you placed the secret.json file, e.g. 
     ```
-    ClientSecretFile: /etc/openhab2/scripts/CalSyncHAB/CalSyncHABSecret.json
+    ClientSecretFile: /etc/openhab/scripts/CalSyncHAB/CalSyncHABSecret.json
     ```
-- create a shell script “/etc/openhab2/scripts/CalSyncHAB.sh” with the following content: 
+- create a shell script “/etc/openhab/scripts/CalSyncHAB.sh” with the following content: 
     ```
     #!/bin/sh
-    /usr/bin/python /etc/openhab2/scripts/CalSyncHAB/CalSyncHAB.py --noauth_local_webserver
+    /usr/bin/python /etc/openhab/scripts/CalSyncHAB/CalSyncHAB.py --noauth_local_webserver
     ```
 - Set rights and owner for the shell script:
     ```
-    chown openhab:openhab /etc/openhab2/scripts/CalSyncHAB.sh
-    chmod +x /etc/openhab2/scripts/CalSyncHAB.sh
+    chown openhab:openhab /etc/openhab/scripts/CalSyncHAB.sh
+    chmod +x /etc/openhab/scripts/CalSyncHAB.sh
     ```
 
 #### Step 5: First launch
@@ -87,15 +87,17 @@ After executing CalSyncHAB.py for the first time (first time it should be done m
 
 - Linux (headlesss or without browser):
 ```
-sudo -u openhab /etc/openhab2/scripts/CalSyncHAB.sh
+sudo -u openhab /etc/openhab/scripts/CalSyncHAB.sh
  ```
 Don't stop the script, but copy the url shown by the script into a browser (on another machine), click “Allow” and paste the given code back into the script prompt. Press enter.
 
 From your openhab rules you can use
 ```
-executeCommandLine(”/etc/openhab2/scripts/CalSyncHAB.sh",5*1000)
+executeCommandLine(”/etc/openhab/scripts/CalSyncHAB.sh",5*1000)
 ```
 to update your items.
+
+In case you are still on openhab2 you might need to use "/etc/openhab2/..." instead of "/etc/openhab/..."
 
 ### Samples
 You wil find two sample files for openHAB2:
