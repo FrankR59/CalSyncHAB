@@ -8,12 +8,12 @@ Software licensed under GPL version 3 available on http://www.gnu.org/licenses/g
 
 ### 
 ### Usage
-Since I (and others) couldn’t make openHAB's CalDAV Personal binding to work with Google Calendar, and, according to this https://community.openhab.org/t/caldav-google-calendar-problem/9219/101?u=davorf, there is a problem with CalDAV Personal binding in OH2, https://github.com/davorf made a simple Python script that authenticates via OAuth2, and uses Google Calendar API to populate OH items with an event information. I simply added the ability to use multiple Google Calendars from your one Google Account. Also I added some OH2 sample items and rules for being used with the script. Now we are able to not only show google calendar events within openHAB but also use the events to update the status of items and cause actions.
+Since I (and others) couldn’t make openHAB's CalDAV Personal binding to work with Google Calendar, and, according to this https://community.openhab.org/t/caldav-google-calendar-problem/9219/101?u=davorf, there is a problem with CalDAV Personal binding in OH, https://github.com/davorf made a simple Python script that authenticates via OAuth2, and uses Google Calendar API to populate OH items with an event information. I simply added the ability to use multiple Google Calendars from your one Google Account. Also I added some OH} sample items and rules for being used with the script. Now we are able to not only show google calendar events within openHAB but also use the events to update the status of items and cause actions.
 
 ### Installation
-#### Step 1: Create OAUth2 credentials
-First, you need to create OAuth2 credentials (https://console.developers.google.com), download credentials in JSON format and place it in CalSyncHAB folder (cloned or downloaded from a github). 
-In detail: go to https://console.developers.google.com/apis, and then choose Credentials on the menu (located on the left side of the screen). After that, press the blue button “Create credentials” located below the page title, and choose “OAuth client ID”. Select “Other” as application type, fill in “Name” field, and press “Create” button. It will show your “Client ID” and “Client secret” in a pop-up window. After closing this pop-up, you can download JSON credentials file by pressing Download JSON button located on the right side (it looks like download button on dropbox, google drive, etc). You will need this file in step 4.
+#### Step 1: Create OAUth2 Service Account
+First, you need to create OAuth2 Service Account (https://console.developers.google.com), download servie-account file in JSON format and place it in CalSyncHAB folder (cloned or downloaded from a github). 
+In detail: go to https://console.developers.google.com/apis, and then choose Service Account on the menu (located on the top of the screen). Name your Service Account and give it an ID. Copy the mail address that is shown below the ID. Click "Create and Continue". In the next screen choose "Owner" as role and save your service account. From the console choose your new Service Account, go to "key" and add a new private key. In the next screen choose "JavaScript Object Notation" and click "Create". A file window will be opend by your browser to save your service-Account json file. You will need this file in step 4.
 
 #### Step 2: Install google api
 After installing Python3 (sudo apt install python3), you need to install pip (sudo apt-get install python3-pip) and following packages:
@@ -41,8 +41,8 @@ Put in here the list of your calendars you want to retrieve information from (if
 
     MaxEvents - maximal number of events retrieved (starting from current date and time)
     TimeZone - in format ±HH:mm
-    ClientSecretFile - name of the OAuth2 credentials file in JSON format
-    HostName - IP address or host name of the OH2 server
+    ClientServiceFile - name and path of the OAuth2 service-sccount.json file you saved in step 1.
+    HostName - IP address or host name of the OH} server
     Port - Port of the OH server (usually 8080)
     ItemPrefix - prefix of the calendar items in OpenHAB - for example, if you use ItemPrefix gCal_ you should create following items:
     gCal_Event1_Summary (String)
@@ -55,7 +55,7 @@ If you’ve set MaxEvents to 10, you should have 10 sets of those items - for ex
 
 #### Step 4: Setup files and folders
 Windows users do not need the chown and chmod commands
-- Create a folder “CalSyncHAB” within /etc/openhab2/scripts
+- Create a folder “CalSyncHAB” within /etc/openhab/scripts
 - Put the python scripts, .ini file and the .json file into this new folder
 - Set owner of the new folder:
     ```
@@ -73,7 +73,7 @@ Windows users do not need the chown and chmod commands
 - create a shell script “/etc/openhab/scripts/CalSyncHAB.sh” with the following content: 
     ```
     #!/bin/sh
-    /usr/bin/python /etc/openhab/scripts/CalSyncHAB/CalSyncHAB.py --noauth_local_webserver
+    /usr/bin/python /etc/openhab/scripts/CalSyncHAB/CalSyncHAB.py
     ```
 - Set rights and owner for the shell script:
     ```
@@ -81,26 +81,8 @@ Windows users do not need the chown and chmod commands
     chmod +x /etc/openhab/scripts/CalSyncHAB.sh
     ```
 
-#### Step 5: First launch
-- Windows:
-After executing CalSyncHAB.py for the first time (first time it should be done manually, not via OpenHAB), it will open Web Browser and ask you for a permission to access your calendar. You need to sign in to your Google account (if you aren’t signed in already) and press Allow button.
-
-- Linux (headlesss or without browser):
-```
-sudo -u openhab /etc/openhab/scripts/CalSyncHAB.sh
- ```
-Don't stop the script, but copy the url shown by the script into a browser (on another machine), click “Allow” and paste the given code back into the script prompt. Press enter.
-
-From your openhab rules you can use
-```
-executeCommandLine(”/etc/openhab/scripts/CalSyncHAB.sh",5*1000)
-```
-to update your items.
-
-In case you are still on openhab2 you might need to use "/etc/openhab2/..." instead of "/etc/openhab/..."
-
 ### Samples
-You wil find two sample files for openHAB2:
+You wil find two sample files for openHAB:
     samples/items/calendar.items
     samples/rules/calendar.rules
 
