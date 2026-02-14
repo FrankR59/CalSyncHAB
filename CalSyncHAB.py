@@ -1,38 +1,25 @@
-import Settings as S
+﻿import Settings as S
 import warnings
 import requests
 import time
-import argparse as AP
-import datetime
-import httplib2
+from datetime import datetime, timezone
 from operator import itemgetter
-from apiclient import discovery
-from oauth2client import client
-from oauth2client import tools
-from oauth2client.file import Storage
+import os.path
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
-Flags = AP.ArgumentParser(parents=[tools.argparser]).parse_args()
 
 def GetCredentials():
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
-        CredentialStore = Storage(S.CredentialFilePath)
-        Credentials = CredentialStore.get()
+    creds = service_account.Credentials.from_service_account_file(S.CalendarClientServiceFile, scopes=[S.CalendarScope])
+    return creds
 
-    if not Credentials or Credentials.invalid:
-        AuthenticationFlow = client.flow_from_clientsecrets(S.CalendarClientSecretFile, S.CalendarScope)
-        AuthenticationFlow.user_agent = S.ApplicationName
-        Credentials = tools.run_flow(AuthenticationFlow, CredentialStore, Flags)
-
-    return Credentials
 
 def Main():
     Credentials = GetCredentials()
-
-    HTTPAuthorization = Credentials.authorize(httplib2.Http())
-    CalendarService = discovery.build('calendar', 'v3', http = HTTPAuthorization)
-    CurrentTime = datetime.datetime.utcnow().isoformat() + 'Z'
-
+    
+    CalendarService = build('calendar', 'v3', credentials=Credentials)
+    CurrentTime = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
+    
     EventList = []
     for key, CalendarId in S.CalendarIdList:
         CalendarEvents = CalendarService.events().list(
@@ -64,7 +51,7 @@ def Main():
             if 'start' in SingleEvent:
                 EventStartTime = SingleEvent['start'].get('dateTime', SingleEvent['start'].get('date'))
                 try:
-                    datetime.datetime.strptime(EventStartTime, '%Y-%m-%dT%H:%M:%S' + S.CalendarTimeZone)
+                    datetime.strptime(EventStartTime, '%Y-%m-%dT%H:%M:%S' + S.CalendarTimeZone)
                 except ValueError:
                     if "T" not in EventStartTime:
                         EventStartTime = EventStartTime + 'T00:00:00' + S.CalendarTimeZone
@@ -77,7 +64,7 @@ def Main():
             if 'end' in SingleEvent:
                 EventEndTime = SingleEvent['end'].get('dateTime', SingleEvent['end'].get('date'))
                 try:
-                    datetime.datetime.strptime(EventEndTime, '%Y-%m-%dT%H:%M:%S' + S.CalendarTimeZone)
+                    datetime.strptime(EventEndTime, '%Y-%m-%dT%H:%M:%S' + S.CalendarTimeZone)
                 except ValueError:
                     if "T" not in EventEndTime:
                         EventEndTime = EventEndTime + 'T00:00:00' + S.CalendarTimeZone
@@ -92,7 +79,7 @@ def Main():
             EventList.append(event)
     
     SortedEvents = sorted(EventList, key=itemgetter(3)) 
-
+    
     if S.OpenHABPort.strip() != '':
         TrimmedHostAndPort = S.OpenHABHostName.strip() + ':' + S.OpenHABPort.strip()
     else:

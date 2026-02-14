@@ -2,25 +2,24 @@ import configparser
 import os
 
 ApplicationDir = os.path.dirname(os.path.abspath(__file__))
-HomeDir = os.path.expanduser('~')
-CredentialDir = os.path.join(HomeDir, '.credentials')
+#HomeDir = os.path.expanduser('~')
+#CredentialDir = os.path.join(HomeDir, '.credentials')
 
-if not os.path.exists(CredentialDir):
-    os.makedirs(CredentialDir)
+#if not os.path.exists(CredentialDir):
+#    os.makedirs(CredentialDir)
 
-CredentialFilePath = os.path.join(CredentialDir, 'CalSyncHAB.json')
 CalSyncHABSettings = os.path.join(ApplicationDir, 'CalSyncHAB.ini')
 
 Settings = configparser.ConfigParser()
 Settings.read(CalSyncHABSettings)
 
-ApplicationName = Settings.get('General', 'ApplicationName')
+#ApplicationName = Settings.get('General', 'ApplicationName')
 
 CalendarScope = Settings.get('Calendar', 'Scope')
 CalendarIdList = Settings.items('CalendarIDs')
 CalendarMaxEvents = Settings.get('Calendar', 'MaxEvents')
 CalendarTimeZone = Settings.get('Calendar', 'TimeZone')
-CalendarClientSecretFile = Settings.get('Calendar', 'ClientSecretFile')
+CalendarClientServiceFile = Settings.get('Calendar', 'ClientServiceFile')
 
 OpenHABHostName = Settings.get('OpenHAB', 'HostName')
 OpenHABPort = Settings.get('OpenHAB', 'Port')
